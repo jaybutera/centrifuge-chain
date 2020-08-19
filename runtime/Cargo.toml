@@ -12,6 +12,7 @@ repository = "https://github.com/centrifuge/centrifuge-chain"
 # external pallet
 substrate-pallet-multi-account = { version = "2.0.0-alpha.3", git = "https://github.com/centrifuge/substrate-pallet-multi-account", rev = "35fe33019a6cdf72137712d290a0965ac5eb71fb", default-features = false }
 chainbridge = { version = "0.0.1", git = "https://github.com/ChainSafe/chainbridge-substrate.git", tag = "v0.0.1-alpha" , default-features = false}
+pallet-commodities = { git = "https://github.com/jaybutera/pallet-nft", default-features = false }
 
 # third-party dependencies
 codec = { package = "parity-scale-codec", version = "1.0.6", default-features = false, features = ["derive"] }
@@ -118,4 +119,5 @@ std = [
 	"sp-version/std",
 	"pallet-identity/std",
     "chainbridge/std",
+    "pallet-commodities/std",
 ]
