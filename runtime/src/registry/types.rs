@@ -19,6 +19,17 @@ pub type Salt = [u8; 32];
 /// A registry id is needed as well to uniquely identify an asset on-chain.
 pub type TokenId = U256;
 
+/*
+pub trait Destructable{
+    /// Peices of larger type
+    //type Components;
+
+    /// Break self into component parts
+    fn destruct(self) -> ();
+    /// Build from peices
+}
+*/
+
 /// A global identifier for an nft/asset on-chain. Composed of a registry and token id.
 #[derive(Encode, Decode, Clone, PartialEq, Eq, Default, Debug)]
 pub struct AssetId(pub RegistryId, pub TokenId);
@@ -124,6 +135,7 @@ pub trait HasId {
     /// Returns unique asset id.
     fn id(&self) -> &AssetId;
 }
+
 
 /// A general interface for registries that require some sort of verification to mint their
 /// underlying NFTs. A substrate module can implement this trait.

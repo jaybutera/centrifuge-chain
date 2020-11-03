@@ -34,6 +34,9 @@ mod mock;
 mod tests;
 
 pub trait Trait: frame_system::Trait {
+    /// An nft identifier. May be a product of info (like [registry, token]), and so implements
+    /// destruct.
+    type AssetId: Hashable + Member + Debug + Default + FullCodec;
     /// The data type that is used to describe this type of asset.
     type AssetInfo: Hashable + Member + Debug + Default + FullCodec;
     type Event: From<Event<Self>> + Into<<Self as frame_system::Trait>::Event>;
@@ -54,9 +57,11 @@ impl<AssetId, AssetInfo> Nft for Asset<AssetId, AssetInfo> {
 decl_storage! {
     trait Store for Module<T: Trait> as Asset {
         /// A mapping from a asset ID to the account that owns it.
-        AccountForAsset get(fn account_for_asset): double_map hasher(blake2_128_concat) RegistryId, hasher(blake2_128_concat) TokenId => T::AccountId;
+        //AccountForAsset get(fn account_for_asset): double_map hasher(blake2_128_concat) RegistryId, hasher(blake2_128_concat) TokenId => T::AccountId;
+        AccountForAsset get(fn account_for_asset): map hasher(blake2_128_concat) T::AssetId => T::AccountId;
         /// A double mapping of registry id and asset id to an asset's info.
-        Assets get(fn asset): double_map hasher(blake2_128_concat) RegistryId, hasher(blake2_128_concat) TokenId => <T as Trait>::AssetInfo;
+        //Assets get(fn asset): double_map hasher(blake2_128_concat) RegistryId, hasher(blake2_128_concat) TokenId => <T as Trait>::AssetInfo;
+        Assets get(fn asset): map hasher(blake2_128_concat) T::AssetId => T::AssetInfo;
     }
 }
 
@@ -115,21 +120,24 @@ decl_module! {
 impl<T: Trait>
     Unique for Module<T>
 {
-    type Asset = Asset<AssetId, <T as Trait>::AssetInfo>;
+    type Asset = Asset<<T as Trait>::AssetId, <T as Trait>::AssetInfo>;
     type AccountId = <T as frame_system::Trait>::AccountId;
 
+    /*
     fn owner_of(asset_id: &AssetId) -> T::AccountId {
-        let (registry_id, token_id) = AssetIdRef::from(asset_id).destruct();
-        Self::account_for_asset(registry_id, token_id)
+        //let (registry_id, token_id) = AssetIdRef::from(asset_id).destruct();
+        //Self::account_for_asset(registry_id, token_id)
+        //Self::account_for_asset(registry_id, token_id)
     }
+    */
 
     fn transfer(
         caller: &T::AccountId,
         dest_account: &T::AccountId,
-        asset_id: &AssetId,
+        asset_id: &T::AssetId,
     ) -> dispatch::DispatchResult {
-        let owner = Self::owner_of(asset_id);
-        let (registry_id, token_id) = AssetIdRef::from(asset_id).destruct();
+        let owner = Self::account_for_asset(asset_id);
+        //let (registry_id, token_id) = AssetIdRef::from(asset_id).destruct();
 
         // Check that owner account exists
         ensure!(owner != T::AccountId::default(),
@@ -139,7 +147,8 @@ impl<T: Trait>
                 Error::<T>::NotAssetOwner);
 
         // Replace owner with destination account
-        AccountForAsset::<T>::insert(registry_id, token_id, dest_account);
+        //AccountForAsset::<T>::insert(registry_id, token_id, dest_account);
+        AccountForAsset::<T>::insert(asset_id, dest_account);
 
         Ok(())
     }

@@ -154,6 +154,7 @@ impl<T: Trait> Module<T> {
 
         // Interpreted in big endian
         let nplus1 = H160::from_slice(&res[0..20]);
+        // let nplus1 = T::RegistryId::from(&res[0..20])
 
         // Update the nonce
         <RegistryNonce>::put( nplus1 );

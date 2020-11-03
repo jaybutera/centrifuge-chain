@@ -814,6 +814,7 @@ impl registry::Trait for Runtime {
 
 impl nft::Trait for Runtime {
     type Event = Event;
+    type AssetId = registry::types::AssetId;
     type AssetInfo = registry::types::AssetInfo;
 }
 
