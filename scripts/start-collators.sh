@@ -9,7 +9,9 @@ function cleanup() {
 # Parachain id of collators
 parachain_id=10001
 # Paths to chain spec files
-relay_config=../../polkadot/rococo-local-cfde-real-overseer.json
+#relay_config=../../polkadot/rococo-local-cfde-real-overseer.json
+#relay_config=../../polkadot/rococo-local-custom-relay.json
+relay_config=../../polkadot/tmp1.json
 collator_config=''
 # Output files for collator processes
 col_1_log=/tmp/collator1.log
